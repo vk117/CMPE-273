@@ -1,0 +1,57 @@
+body, div, a {
+    padding: 1;
+    margin: 1;
+    font-family:"Digital-7";
+}
+
+#calculator {
+    background-color: #4E4A4A;
+    width: 320px;
+    height: 470px;
+    border: black solid;
+    margin: 10px auto;
+	padding: 5px;
+	
+}
+
+#calculator button{
+    display: block;
+    float: left;
+    cursor: pointer;
+    text-align: center;
+    background: black;
+    border-radius: 10px;
+    color: white;
+}
+
+#numbers, #operators {
+	margin: auto;	
+}
+
+#operators button {
+	width: 45px;
+	height: 45px;
+	font-size: 39px;
+	padding: 2px;
+	margin: 5px 8px;
+}
+
+#numbers button {
+	width: 60px;
+	height: 60px;
+	font-size: 32px;
+	padding: 10px;
+	margin: 5px 20px;
+}
+
+#total {
+    height: 70px;
+    width: 300px;
+    margin:auto;
+    background-color:black;
+    margin-bottom: 5px;
+    text-align: right;
+    font-size: 70px;
+    color: #1BEA22;
+    padding: 0px 5px;
+}
