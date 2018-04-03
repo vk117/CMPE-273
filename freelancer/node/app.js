@@ -6,24 +6,38 @@ var cors = require('cors');
 var mysql = require('mysql');
 var http = require('http');
 var router = express.Router();
+var session = require('express-session');
+var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
+app.use(session({
+    secret: 'keyboard cat'
+}));
 
-var connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'Sonal@1717',
-        database: 'new_users',
-        port: 3306
+mongoose.connect('mongodb://localhost:27017/freelancer');
+var Schema = mongoose.Schema;
+
+var user_details = new Schema({
+    username: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
+    user: String
+});
+
+var user_info = new Schema({
+    name: {type: String, required: true},
+    email: {type: String, required: true, unique: true},
+    phone: {type: Number, required: true, unique: true},
+    about: {type: String, required: true},
+    skills: {type: String, required: true}
 })
 
-connection.connect(function(err){
-    if(err) throw err
-    else{console.log('You are now connected...')}
-});
+var User = mongoose.model('User', user_details);
+var userInfo = mongoose.model('userInfo', user_info);
+var salt = bcrypt.genSaltSync(10);
 
 app.post('/add', function(req, res, next) {
     console.log("Checking.....")
@@ -35,22 +49,14 @@ app.post('/add', function(req, res, next) {
     if(uName == ' '|| pwd == ' '|| uName == ''|| pwd == '') {
         res.status(401).json({message: "Sign Up failed"});
     }
-
     else {
-        var insertUser = "insert into users_default values('"+uName+"','"+pwd+"','"+u_name+"')";
-        console.log("this is user query" +insertUser);
-    
-
-    connection.query(insertUser, function(err, rows, fields){
-        if(err){
-            throw err;
-        }
-        
-        else{
-            console.log("SignUp successful");
-            res.status(201).json({message: "SignUp successfull"});
-        }
-    })
+        var passwordToSave = bcrypt.hashSync(pwd, salt);
+        var new_user = new User({username: uName, password: passwordToSave, user: u_name});
+        new_user.save(function(err, new_user){
+            if(err) return console.error(err);
+        })
+        console.log("SignUp successful");
+        res.status(201).end();
     }
 })
 
@@ -62,35 +68,17 @@ app.post('/check', function(req, res, next){
         res.status(401).json({message: "Sign Up failed"});
     }
     else {
-        var checkUser = "select user from users_default where username='"+uName+"' and password='"+pwd+"'";
-        console.log('this is thte query' + checkUser);
-    
-
-    connection.query(checkUser, function(err, rows, fields){
-        if(err) {
-            throw err;
-        }
-        
-        else
-            if(rows.length>0) {
-                console.log("Valid Login");
-                console.log("Sending username:"+ JSON.stringify(rows[0].user));
-                var x = JSON.stringify(rows[0].user);
-                console.log("Sending Username" + String(x));
-                //res.writeHead(200, {'Content-Type': 'application/json'});
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify({user_name: uName}));
-                
+        passwordToCheck = bcrypt.hashSync(pwd, salt);
+        User.find({username: uName, password: passwordToCheck}, function(err, users){
+            if(err) return console.error(err);
+            else if(users.length){
+                res.status(201).end();
             }
-        
-        else {
-            res.status(401).json({message: "Login failed"});
-            
-        }
-    
-    })
-
-}
+            else {
+                res.status(401).end();
+            }
+        })
+     }
 })
 
 app.post('/enter', function(req, res, next){
@@ -105,18 +93,43 @@ app.post('/enter', function(req, res, next){
         }
 
     else{
-        var enterDetail = "insert into user_info values('"+name+"','"+email+"','"+phone+"','"+about+"','"+skill+"')";
-        console.log("This is the query"+ enterDetail);
-
-        connection.query(enterDetail, function(err, rows, fields){
-            if(err) {
-                throw err;
-            }
-            else {
-                console.log("Values Entered!");
-                res.status(201).json({message: "Successfull"});}
-                console.log("Response status sent");
+        var new_info = new userInfo({name: name, email: email, phone: phone, about: about, skills: skill});
+        new_info.save(function(err, new_info){
+            if(err) return console.error(err);
         })
+        console.log('Details Entered');
+        res.status(201).end();
+    }
+})
+
+/*app.get('/welcome', function(req, res){
+   console.log(req.session);
+})*/
+
+/*app.get('/login', function(req, res){
+    if(req.session.user){
+        res.send("If you can view this page, it means you are logged in");
+    }
+    else{
+        res.status(210).send('Login page will load');
+    }
+})*/
+
+app.post('/getdetails', function(req, res){
+    var username = req.body.username;
+    if(username == '' || username == ' '){
+        res.status(401).end();
+    }
+    else{
+       userInfo.find({email: username}, function(err, details){
+           if(err) return console.error(err);
+           else if(details.length){
+               res.status(201).send(details);
+           }
+           else{
+               res.status(401).end();
+           }
+       })
     }
 })
 

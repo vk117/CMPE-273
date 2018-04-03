@@ -5,6 +5,7 @@ import LogInDetails from '../actions/actionCreator';
 import {bindActionCreators} from 'redux';
 import {withRouter, Link, BrowserRouter as Router, Route} from 'react-router-dom';
 import Welcome from './Welcome';
+import * as API from '../api/API';
 
 export class Login extends React.Component{
     constructor(props){
@@ -19,6 +20,7 @@ export class Login extends React.Component{
         }
     }
     
+
     combo() {
         console.log("Updating state");
         this.updateState(this.state);

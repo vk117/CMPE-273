@@ -10,8 +10,7 @@ export const doLogin = (payload) => {
         method  : "POST",
         headers : headers,
         body    : JSON.stringify(payload)
-    }).then((res) => res.json())
-      .then(res => {return res;})
+    }).then(res => {return res;})
       .catch(error => {
         console.log("This is error");
         return error;
@@ -45,3 +44,4 @@ export const doDetails = (payload) => {
             return error;
         });
 }
+

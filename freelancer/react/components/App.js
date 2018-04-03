@@ -49,11 +49,15 @@ import Details from './Details';
         const {message} = this.state;
         //send to node
         API.doLogin(payload)
-            .then((user) => {
-                this.setState({message: 'Login Successfull'});
-                this.setState({username: String(user.user_name)})
-              //console.log("Sending to welcome " + uname);
-                this.props.history.push('/welcome');
+            .then((res) => {
+                if(res.status == 201){
+                    console.log('Status 201 recieved');
+                    this.setState({username: payload.username});
+                    this.props.history.push('/welcome');
+                }
+                else{
+                    this.setState({message: "invalid username/password"});
+                }
             })
     }
 

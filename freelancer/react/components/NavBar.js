@@ -11,7 +11,7 @@ class NavBar extends React.Component {
                 <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
                     <ul className="navbar-nav">
                         <li className="nav-item active">
-                            <a className="nav-link" href="#">freelancer</a>
+                            <a className="nav-link" href="http://localhost:3000/">freelancer</a>
                         </li>
                         <li className="nav-item active">
                             <a className="nav-link" href="http://localhost:3000/signup">Sign Up</a>

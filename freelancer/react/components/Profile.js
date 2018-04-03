@@ -3,10 +3,37 @@ import Footer from './Footer';
 
 class Profile extends React.Component {
     constructor() {
-        super()
+        super();
+        this.state = {
+            name: '',
+            email: '',
+            phone: '',
+            about: '',
+            skills: ''
+        }
     }
 
-
+    componentWillMount(){
+        return fetch('http://localhost:8080/getdetails', {
+            method: 'POST',
+            headers: {
+                'Accept'       : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({username: this.props.username})
+        }).then(res => res.json())
+          .then((res) => {
+            for(var i=0; i<res.length; i++){
+                this.setState({
+                    name: res[i].name,
+                    email: res[i].email,
+                    phone: res[i].phone,
+                    about: res[i].about,
+                    skills: res[i].skills});
+            }
+          
+        })
+    }
 
     render() {
         return(
@@ -14,21 +41,19 @@ class Profile extends React.Component {
                 <div className="card bg-light text-dark profile">
                     <div className="card-body">
                         <h1> User Profile</h1>
-        
+                        {this.props.username} 
                         <div>
-                            Name: Varun Khatri
+                            Name: {this.state.name}
                         </div>
                         <div>
-                            Email: {this.props.username}
+                            Phone: {this.state.phone}
                         </div>
                         <div>
-                            Phone: 4088861758
+                            About: {this.state.about}
                         </div>
                         <div>
-                            About: I am an undergraduate computer science student currently engaged with my Bachelors degree. I am specifically interested in Video Game programming and Web Development, I possess the required technical acumen to hold my own in such an Industries.
-                            Currently I am unemployed but I am looking forward to grab any opportunity worth my time.
+                            Skills: {this.state.skills}
                         </div>
-                        Skills: ReactJS, Node.js, etc;
                     </div>
                 </div>
                 <div>
