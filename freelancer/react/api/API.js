@@ -9,7 +9,8 @@ export const doLogin = (payload) => {
     return fetch(`${api}check`, {
         method  : "POST",
         headers : headers,
-        body    : JSON.stringify(payload)
+        body    : JSON.stringify(payload),
+        credentials: 'include'
     }).then(res => {return res;})
       .catch(error => {
         console.log("This is error");

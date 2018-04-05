@@ -20,7 +20,8 @@ class Profile extends React.Component {
                 'Accept'       : 'application/json',
                 'Content-Type' : 'application/json'
             },
-            body: JSON.stringify({username: this.props.username})
+            body: JSON.stringify({username: this.props.username}),
+            credentials: 'include'
         }).then(res => res.json())
           .then((res) => {
             for(var i=0; i<res.length; i++){

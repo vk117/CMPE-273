@@ -9,14 +9,21 @@ var router = express.Router();
 var session = require('express-session');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-
+var passport = require('passport');
+LocalStrategy = require('passport-local').Strategy;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
 app.use(session({
-    secret: 'keyboard cat'
+        secret: "don't tell anyone",
+        saveUninitialized: true,
+        cookie: {secure: false, httpOnly: false}
+    }));
+app.use(cors({
+    credentials : true,
+    origin: true
 }));
+app.use(passport.initialize());
 
 mongoose.connect('mongodb://localhost:27017/freelancer');
 var Schema = mongoose.Schema;
@@ -39,6 +46,37 @@ var User = mongoose.model('User', user_details);
 var userInfo = mongoose.model('userInfo', user_info);
 var salt = bcrypt.genSaltSync(10);
 
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+
+passport.use('login', new LocalStrategy({
+    passReqToCallback: true
+},
+function(req, username, password, done){
+    User.find({username: username}, function(err, user){
+        if(err) {return done(err)}
+        else if(user.length){
+            if(bcrypt.compareSync(password, user[0].password)){
+                req.session.user = username;
+                console.log(req.session);
+                return done(null, user);
+            }
+            else{
+                return done(null, false);
+            }
+        }
+        else {
+            return done(null, false);
+        }
+    })
+}
+))
+
 app.post('/add', function(req, res, next) {
     console.log("Checking.....")
     var uName = req.body.username;
@@ -60,26 +98,14 @@ app.post('/add', function(req, res, next) {
     }
 })
 
-app.post('/check', function(req, res, next){
-    var uName = req.body.username;
-    var pwd = req.body.password;
-    console.log(uName);
-    if(uName == ' '|| pwd == ' '|| uName == ''|| pwd == '') {
-        res.status(401).json({message: "Sign Up failed"});
+
+app.post('/check', 
+    passport.authenticate('login'),
+    function(req, res){
+        //res.redirect('/checksession');
+        res.status(201).end();
     }
-    else {
-        passwordToCheck = bcrypt.hashSync(pwd, salt);
-        User.find({username: uName, password: passwordToCheck}, function(err, users){
-            if(err) return console.error(err);
-            else if(users.length){
-                res.status(201).end();
-            }
-            else {
-                res.status(401).end();
-            }
-        })
-     }
-})
+)
 
 app.post('/enter', function(req, res, next){
     var name = req.body.name;
@@ -104,16 +130,21 @@ app.post('/enter', function(req, res, next){
 
 /*app.get('/welcome', function(req, res){
    console.log(req.session);
+   res.end(201);
 })*/
 
-/*app.get('/login', function(req, res){
-    if(req.session.user){
-        res.send("If you can view this page, it means you are logged in");
+app.get('/checksession',function(req, res){
+    console.log('Checking session...');
+    if(!req.session.user){
+        res.status(401).end();
     }
     else{
-        res.status(210).send('Login page will load');
+        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+        console.log(req.session);
+        res.status(201).end();
     }
-})*/
+    
+})
 
 app.post('/getdetails', function(req, res){
     var username = req.body.username;
@@ -130,6 +161,15 @@ app.post('/getdetails', function(req, res){
                res.status(401).end();
            }
        })
+    }
+})
+
+app.get('/signout', function(req, res){
+    if(req.session.user){
+        console.log('Signing Out...');
+        console.log(req.session);
+        req.session.destroy();
+        res.status(201).end();
     }
 })
 
