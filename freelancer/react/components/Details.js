@@ -95,7 +95,7 @@ class Details extends React.Component {
                     }
                     />
                 </div>
-            </div>
+        
 
             
                 <div className="form-group">
@@ -106,8 +106,9 @@ class Details extends React.Component {
                     onClick={this.combo.bind(this, this.state)} 
                 >
                     Submit
-                    </button>
-                    </div>
+                </button>
+                </div>
+                </div>
                 
                     
             </div>

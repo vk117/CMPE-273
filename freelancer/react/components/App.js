@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Login} from './Login';
+import Login from './Login';
 import {SignUp} from './SignUp';
+import Home from './Home';
+import PostProject from './PostProject';
 import {bindActionCreators} from 'redux';
 import LogInDetails from '../actions/actionCreator';
 import {connect} from 'react-redux';
@@ -121,7 +123,16 @@ import Details from './Details';
                         />
                     </div>
                 )}/>
-        
+                <Route path="/postproject" render={() => (
+                    <div>
+                        <PostProject/>
+                    </div>
+                )}/>
+                <Route path="/welcome/home" render={() => (
+                    <div>
+                        <Home/>
+                    </div>
+                )}/>
              </div>
         )
     }

@@ -7,7 +7,7 @@ import {withRouter, Link, BrowserRouter as Router, Route} from 'react-router-dom
 import Welcome from './Welcome';
 import * as API from '../api/API';
 
-export class Login extends React.Component{
+class Login extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -18,6 +18,17 @@ export class Login extends React.Component{
                 uname:''
             
         }
+    }
+
+    componentDidMount() {
+        return fetch('http://localhost:8080/checksession', {
+            method: 'GET',
+            credentials: 'include'
+        }).then(res => {
+            if(res.status == 201){
+                this.props.history.push('/welcome');
+            }
+        })
     }
     
 
@@ -86,6 +97,5 @@ export class Login extends React.Component{
     }
 }
 
-
-
+export default withRouter(Login);
 

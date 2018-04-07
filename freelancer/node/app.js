@@ -42,8 +42,18 @@ var user_info = new Schema({
     skills: {type: String, required: true}
 })
 
+var new_project = new Schema({
+    _id: {type: Number, required: true},
+    title: {type: String, required: true},
+    description: {type: String, required: true},
+    skills: {type: String, required: true},
+    budget: {type: String, required: true},
+    user: {type: String, required: true}
+})
+
 var User = mongoose.model('User', user_details);
 var userInfo = mongoose.model('userInfo', user_info);
+var Project = mongoose.model('Project', new_project); 
 var salt = bcrypt.genSaltSync(10);
 
 passport.serializeUser(function(user, done) {
@@ -147,7 +157,7 @@ app.get('/checksession',function(req, res){
 })
 
 app.post('/getdetails', function(req, res){
-    var username = req.body.username;
+    var username = req.session.user;
     if(username == '' || username == ' '){
         res.status(401).end();
     }
@@ -171,6 +181,47 @@ app.get('/signout', function(req, res){
         req.session.destroy();
         res.status(201).end();
     }
+})
+
+app.post('/postproject', function(req, res){
+    var title = req.body.title;
+    var description = req.body.description;
+    var skills = req.body.skills;
+    var budget = req.body.budget;
+    if(title == ''|| title == ' '|| description == ''|| description == ' '|| skills == ''|| skills == ' '|| budget == ''|| budget == ' '){
+        res.status(401).end();
+    }
+    else{
+        Project.count(function(err, count){
+            var id;
+            if(!err && count == 0){
+                console.log(count);
+                id = 0;
+            }
+            else{
+                console.log(count);
+                id = count;
+            }
+            var new_project = new Project({_id: id, title: title, description: description, skills: skills, budget: budget, user: req.session.user});
+            new_project.save(function(err, new_user){
+                if(err) return console.error(err);
+            })
+            console.log('saved new project');
+            res.status(201).end();
+        })
+    }
+})
+
+app.get('/getproject',function(req, res){
+    Project.find({}, function(err, result){
+        if(!err){
+            console.log('Response from controller', result);
+            res.status(201).send(result);
+        }
+        else{
+            res.status(401).end();
+        }
+    })
 })
 
 app.listen(8080, function(){
