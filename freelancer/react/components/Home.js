@@ -1,6 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import ShowElement from './ShowElement';
+import {Link} from 'react-router-dom';
 
 class Home extends React.Component{
     constructor(){
@@ -17,6 +18,17 @@ class Home extends React.Component{
           .then((pro) => {
               this.setState({projects: pro});
           })
+    }
+
+    componentDidMount(){
+        return fetch('http://localhost:8080/checksession',{
+            method: 'GET',
+            credentials: 'include'
+        }).then(res => {
+            if(res.status != 201){
+                this.props.history.push('/login');
+            }
+        })
     }
 
 

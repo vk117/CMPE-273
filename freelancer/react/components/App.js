@@ -4,6 +4,7 @@ import Login from './Login';
 import {SignUp} from './SignUp';
 import Home from './Home';
 import PostProject from './PostProject';
+import ShowProject from './ShowProject';
 import {bindActionCreators} from 'redux';
 import LogInDetails from '../actions/actionCreator';
 import {connect} from 'react-redux';
@@ -128,12 +129,13 @@ import Details from './Details';
                         <PostProject/>
                     </div>
                 )}/>
-                <Route path="/welcome/home" render={() => (
+                <Route path="/projects" render={() => (
                     <div>
                         <Home/>
                     </div>
-                )}/>
-             </div>
+                 )}/>
+                <Route path="/details_2" component={ShowProject}/>
+            </div>
         )
     }
 }

@@ -224,6 +224,19 @@ app.get('/getproject',function(req, res){
     })
 })
 
+app.get('/projects/:id', function(req, res){
+    console.log(req.params.id);
+    Project.find({_id: req.params.id}, function(err, details){
+        if(err) return console.error(err);
+        else if(details.length){
+            res.status(201).send(details);
+        }
+        else{
+            res.status(401).end();
+        }
+    })
+})
+
 app.listen(8080, function(){
     console.log('the server listening');
 })
