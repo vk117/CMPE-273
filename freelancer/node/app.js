@@ -7,85 +7,31 @@ var mysql = require('mysql');
 var http = require('http');
 var router = express.Router();
 var session = require('express-session');
-var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 var passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
+require('./routes/passport')(passport);
+var mongo = require('./routes/mongo');
+var MongoStore = require('connect-mongo')(session);
+
+var userInfo = mongo.userInfo;
+var User = mongo.User;
+var Project = mongo.Project;
+var salt = bcrypt.genSaltSync(10);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
         secret: "don't tell anyone",
         saveUninitialized: true,
-        cookie: {secure: false, httpOnly: false}
+        cookie: {secure: false, httpOnly: false},
+        store: new MongoStore({ttl: 14 * 24 * 60 * 60, mongooseConnection: mongo.mongoose.connection})
     }));
 app.use(cors({
     credentials : true,
     origin: true
 }));
 app.use(passport.initialize());
-
-mongoose.connect('mongodb://localhost:27017/freelancer');
-var Schema = mongoose.Schema;
-
-var user_details = new Schema({
-    username: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    user: String
-});
-
-var user_info = new Schema({
-    name: {type: String, required: true},
-    email: {type: String, required: true, unique: true},
-    phone: {type: Number, required: true, unique: true},
-    about: {type: String, required: true},
-    skills: {type: String, required: true}
-})
-
-var new_project = new Schema({
-    _id: {type: Number, required: true},
-    title: {type: String, required: true},
-    description: {type: String, required: true},
-    skills: {type: String, required: true},
-    budget: {type: String, required: true},
-    user: {type: String, required: true}
-})
-
-var User = mongoose.model('User', user_details);
-var userInfo = mongoose.model('userInfo', user_info);
-var Project = mongoose.model('Project', new_project); 
-var salt = bcrypt.genSaltSync(10);
-
-passport.serializeUser(function(user, done) {
-    done(null, user);
-  });
-  
-  passport.deserializeUser(function(user, done) {
-    done(null, user);
-  });
-
-passport.use('login', new LocalStrategy({
-    passReqToCallback: true
-},
-function(req, username, password, done){
-    User.find({username: username}, function(err, user){
-        if(err) {return done(err)}
-        else if(user.length){
-            if(bcrypt.compareSync(password, user[0].password)){
-                req.session.user = username;
-                console.log(req.session);
-                return done(null, user);
-            }
-            else{
-                return done(null, false);
-            }
-        }
-        else {
-            return done(null, false);
-        }
-    })
-}
-))
 
 app.post('/add', function(req, res, next) {
     console.log("Checking.....")
@@ -138,10 +84,6 @@ app.post('/enter', function(req, res, next){
     }
 })
 
-/*app.get('/welcome', function(req, res){
-   console.log(req.session);
-   res.end(201);
-})*/
 
 app.get('/checksession',function(req, res){
     console.log('Checking session...');
