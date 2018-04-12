@@ -1,7 +1,7 @@
 var rpc = new (require('./kafkarpc'))();
 
-function make_request(topic_name, msg, callback){
-    rpc.makeRequest(topic_name, msg, function(err, response){
+function make_request(topic_name, msg, request_type, callback){
+    rpc.makeRequest(topic_name, msg, request_type, function(err, response){
         if(err){
             console.error(err);
         }

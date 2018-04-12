@@ -9,10 +9,10 @@ var router = express.Router();
 var session = require('express-session');
 var bcrypt = require('bcrypt');
 var passport = require('passport');
-LocalStrategy = require('passport-local').Strategy;
 require('./routes/passport')(passport);
 var mongo = require('./routes/mongo');
 var MongoStore = require('connect-mongo')(session);
+var kafka = require('./routes/kafka/client');
 
 var userInfo = mongo.userInfo;
 var User = mongo.User;
@@ -45,12 +45,21 @@ app.post('/add', function(req, res, next) {
     }
     else {
         var passwordToSave = bcrypt.hashSync(pwd, salt);
-        var new_user = new User({username: uName, password: passwordToSave, user: u_name});
-        new_user.save(function(err, new_user){
-            if(err) return console.error(err);
-        })
-        console.log("SignUp successful");
-        res.status(201).end();
+        kafka.make_request('test1', {"username": uName, "password": passwordToSave, "user": u_name}, 'add_user', function(err, result){
+            console.log('in add user');
+            console.log(result);
+            if(err){
+                res.status(401).end();
+            }
+            else{
+                if(result.code == 201){
+                    res.status(201).end();
+                }
+                else{
+                    res.status(401).end();
+                }
+            }
+        });
     }
 })
 
@@ -75,12 +84,21 @@ app.post('/enter', function(req, res, next){
         }
 
     else{
-        var new_info = new userInfo({name: name, email: email, phone: phone, about: about, skills: skill});
-        new_info.save(function(err, new_info){
-            if(err) return console.error(err);
-        })
-        console.log('Details Entered');
-        res.status(201).end();
+        kafka.make_request('test1', {"name": name, "email": email, "phone": phone, "about": about, "skill": skill}, 'put_details', function(err, result){
+            console.log('in add details');
+            console.log(result);
+            if(err){
+                res.status(401).end();
+            }
+            else{
+                if(result.code == 201){
+                    res.status(201).end();
+                }
+                else{
+                    res.status(401).end();
+                }
+            }
+        });
     }
 })
 
@@ -104,15 +122,22 @@ app.post('/getdetails', function(req, res){
         res.status(401).end();
     }
     else{
-       userInfo.find({email: username}, function(err, details){
-           if(err) return console.error(err);
-           else if(details.length){
-               res.status(201).send(details);
-           }
-           else{
+       kafka.make_request('test1', {"email": username}, 'get_details', function(err, result){
+           console.log('in put details');
+           console.log(result);
+           if(err){
                res.status(401).end();
            }
-       })
+           else{
+               if(result.code == 201){
+                   console.log(result);
+                   res.status(201).send(result.data);
+               }
+               else{
+                   res.status(401).end();
+               }
+           }
+       });
     }
 })
 
@@ -134,49 +159,61 @@ app.post('/postproject', function(req, res){
         res.status(401).end();
     }
     else{
-        Project.count(function(err, count){
-            var id;
-            if(!err && count == 0){
-                console.log(count);
-                id = 0;
+        kafka.make_request('test1', {"title": title, "description": description, "skills": skills, "budget": budget, "user": req.session.user}, 'put_project', function(err, result){
+            console.log('in put project');
+            console.log(result);
+            if(err){
+                res.status(401).end();
             }
             else{
-                console.log(count);
-                id = count;
+                if(result.code == 201){
+                    res.status(201).end();
+                }
+                else{
+                    res.status(401).end();
+                }
             }
-            var new_project = new Project({_id: id, title: title, description: description, skills: skills, budget: budget, user: req.session.user});
-            new_project.save(function(err, new_user){
-                if(err) return console.error(err);
-            })
-            console.log('saved new project');
-            res.status(201).end();
-        })
+        });
     }
 })
 
 app.get('/getproject',function(req, res){
-    Project.find({}, function(err, result){
-        if(!err){
-            console.log('Response from controller', result);
-            res.status(201).send(result);
-        }
-        else{
+    kafka.make_request('test1', {"todo": 'Send all projects'}, 'get_projects', function(err, result){
+        console.log('in get projects');
+        if(err){
+            console.error(err);
             res.status(401).end();
         }
-    })
+        else{
+            if(result.code == 201){
+                console.log(result);
+                res.status(201).send(result.data);
+            }
+            else{
+                res.status(401).end();
+            }
+        }
+    });
 })
 
 app.get('/projects/:id', function(req, res){
     console.log(req.params.id);
-    Project.find({_id: req.params.id}, function(err, details){
-        if(err) return console.error(err);
-        else if(details.length){
-            res.status(201).send(details);
-        }
-        else{
+    kafka.make_request('test1', {"id": req.params.id}, 'get_project', function(err, result){
+        console.log('in get project');
+        if(err){
+            console.error(err);
             res.status(401).end();
         }
-    })
+        else{
+            if(result.code == 201){
+                console.log(result);
+                res.status(201).send(result.data);
+            }
+            else{
+                res.status(401).end();
+            }
+        }
+    });
 })
 
 app.listen(8080, function(){

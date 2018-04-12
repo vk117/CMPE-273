@@ -21,24 +21,7 @@ module.exports = function(passport){
     passReqToCallback: true
 },
 function(req, username, password, done){
-    /*User.find({username: username}, function(err, user){
-        if(err) {return done(err)}
-        else if(user.length){
-            if(bcrypt.compareSync(password, user[0].password)){
-                req.session.user = username;
-                console.log(req.session);
-                return done(null, user);
-            }
-            else{
-                return done(null, false);
-            }
-        }
-        else {
-            return done(null, false);
-        }
-    })*/
-
-    kafka.make_request('test1', {"username": username, "password": password}, function(err, results){
+    kafka.make_request('test1', {"username": username, "password": password}, 'login', function(err, results){
         console.log('in results');
         console.log(results);
         if(err){

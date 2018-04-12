@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 var conn = require('./Connection');
 
-var TIMEOUT = 8000;
+var TIMEOUT = 16000;
 var self;
 exports = module.exports = KafkaRPC;
 
@@ -13,7 +13,7 @@ function KafkaRPC(){
     this.response_queue = false;
 }
 
-KafkaRPC.prototype.makeRequest = function(topic_name, content, callback){
+KafkaRPC.prototype.makeRequest = function(topic_name, content, request_type, callback){
     self = this;
     var correlationId = crypto.randomBytes(16).toString('hex');
 
@@ -34,7 +34,12 @@ KafkaRPC.prototype.makeRequest = function(topic_name, content, callback){
         var payloads = [
             {
                 topic: topic_name,
-                messages: JSON.stringify({data: content, replyTo: 'test1_reply', correlationId: correlationId}),
+                messages: JSON.stringify({
+                    data: content, 
+                    replyTo: 'test1_reply', 
+                    correlationId: correlationId,
+                    request_type: request_type
+                }),
                 //replyTo: 'test1_reply',
                 partition: 0
             }

@@ -4,23 +4,6 @@ var salt = bcrypt.genSaltSync(10);
 
 var conn = mongo.mongoose.connection;
 var User = mongo.User;
-/*var x = function(callback){
-    var res={}
-    User.find({username: 'varun.khatri@sjsu.edu'}, function(err, user){
-        if(user.length){
-            if(bcrypt.compareSync('Sonal@1717',user[0].password)){
-                console.log('Login success');
-                res.code = '201';
-            }
-            else{
-                console.log('unsuccessfull');
-                res.code = '401';
-            }
-        }
-        callback(null,res);
-    })
-}
-x();*/
 
 function handle_request(msg, callback){
     var res = {};
