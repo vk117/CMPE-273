@@ -58,8 +58,8 @@ class Login extends React.Component{
         return(
             <div className="container-fluid">
             <div className="row justify-content-md-center vertical-center">
-            <div className="col-md-3">
-                <h1>Log In</h1>
+            <div className="col-md-3 text-center">
+                <h1 className="text-center">Log In</h1>
                 <div className="form-group">
                     <input 
                         type="text" 

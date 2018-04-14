@@ -40,7 +40,6 @@ KafkaRPC.prototype.makeRequest = function(topic_name, content, request_type, cal
                     correlationId: correlationId,
                     request_type: request_type
                 }),
-                //replyTo: 'test1_reply',
                 partition: 0
             }
         ];
@@ -49,17 +48,6 @@ KafkaRPC.prototype.makeRequest = function(topic_name, content, request_type, cal
             console.log(data);
         });
     });
-    /*var payloads = [
-        {
-            topic: topic_name,
-            messages: JSON.stringify({data: content}),
-            replyTo: 'test1_reply',
-            partition: 0
-        }
-    ];
-    self.producer.send(payloads, function(err, data){
-        console.log(data);
-    });*/
 }
 
 KafkaRPC.prototype.setupResponseQueue = function(producer, topic_name, next){

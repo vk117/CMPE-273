@@ -57,14 +57,6 @@ class Profile extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div>
-                <nav className="navbar bottom navbar-dark bg-primary footer">
-                    <div className="center" style={{color: 'white'}}>
-                        Copyright © 2018 localhost:3000
-                    </div>
-                </nav>
-                </div>
-                
             </div>
         )
     }

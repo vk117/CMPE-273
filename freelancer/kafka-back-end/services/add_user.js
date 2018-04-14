@@ -7,7 +7,7 @@ var User = mongo.User;
 
 function handle_request(msg, callback){
     var res = {};
-    console.log('In handle request ' + JSON.stringify(msg));
+    console.log('In handle request ' + JSON.stringify(msg.username));
     var new_user = new User({username: msg.username, password: msg.password, user: msg.user});
     new_user.save(function(err, new_user){
         if(err) {

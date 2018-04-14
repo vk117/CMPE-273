@@ -1,9 +1,7 @@
 var passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
-var mongo = require('./mongo');
 var session = require('express-session');
-var User = mongo.User;
 var salt = bcrypt.genSaltSync(10);
 var kafka = require('./kafka/client');
 

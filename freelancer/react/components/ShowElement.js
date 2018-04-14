@@ -15,7 +15,7 @@ class ShowElement extends React.Component{
             credentials: 'include'
         }).then((res) => res.json())
           .then((arr) => {
-              this.props.history.push('/details_2', {arr: arr});
+              this.props.history.push('/details_2', {arr: arr.result, bidInvisible: arr.bidInvisible});
           })
     }
 

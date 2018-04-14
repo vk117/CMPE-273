@@ -26,11 +26,21 @@ var new_project = new Schema({
     user: {type: String, required: true}
 })
 
+var new_bid = new Schema({
+    _id: {type: Number, required: true},
+    project_id: {type: Number, required: true},
+    bid_price: {type: Number, required: true},
+    period: {type: Number, required: true},
+    bid_by: {type: String, required: true}
+})
+
 var User = mongoose.model('User', user_details);
 var userInfo = mongoose.model('userInfo', user_info);
 var Project = mongoose.model('Project', new_project); 
+var Bid = mongoose.model('Bid', new_bid);
 
 exports.User = User;
 exports.userInfo = userInfo;
 exports.Project = Project;
+exports.Bid = Bid;
 exports.mongoose = mongoose;

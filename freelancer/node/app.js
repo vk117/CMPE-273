@@ -8,15 +8,12 @@ var http = require('http');
 var router = express.Router();
 var session = require('express-session');
 var bcrypt = require('bcrypt');
+var mongo = require('./routes/mongo');
 var passport = require('passport');
 require('./routes/passport')(passport);
-var mongo = require('./routes/mongo');
 var MongoStore = require('connect-mongo')(session);
 var kafka = require('./routes/kafka/client');
 
-var userInfo = mongo.userInfo;
-var User = mongo.User;
-var Project = mongo.Project;
 var salt = bcrypt.genSaltSync(10);
 
 app.use(bodyParser.json());
@@ -206,6 +203,33 @@ app.get('/projects/:id', function(req, res){
         }
         else{
             if(result.code == 201){
+                if(result.data[0].user == req.session.user){
+                console.log(result);
+                res.status(201).send({result: result.data, bidInvisible:'true'});
+                }
+                else{
+                    console.log(result);
+                    res.status(201).send({result: result.data, bidInvisible:'false'});
+                }
+            }
+            else{
+                res.status(401).end();
+            }
+        }
+    });
+})
+
+app.post('/getuserprojects', function(req, res){
+    var user = req.session.user;
+    //console.log(req.body.username);
+    kafka.make_request('test1', {"user": user}, 'getuserprojects', function(err, result){
+        console.log('in get user projects');
+        if(err){
+            console.error(err);
+            res.status(401).end();
+        }
+        else{
+            if(result.code == 201){
                 console.log(result);
                 res.status(201).send(result.data);
             }
@@ -213,7 +237,57 @@ app.get('/projects/:id', function(req, res){
                 res.status(401).end();
             }
         }
+    })
+})
+
+app.post('/bid', function(req, res){
+    kafka.make_request('test1', 
+    {"project_id": req.body.project_id,
+    "bid_by": req.session.user,
+    "period": req.body.period,
+    "bid": req.body.bid,
+    "project_title": req.body.project_title}, 'postBid', function(err, result){
+        console.log('in post bids');
+        if(err){
+            console.error(err);
+            res.status(401).end();
+        }
+        else{
+            if(result.code == 201){
+                res.status(201).end();
+            }
+            else if(result.code == 400){
+                res.status(400).end();
+            }
+            else{
+                res.status(401).end();
+            }
+        }
     });
+})
+
+app.post('/getuserbids', function(req, res){
+    var user = req.session.user;
+    kafka.make_request('test1', {"bid_by": user}, 'userBids', function(err, result){
+        console.log('in get user bids');
+        console.log(result);
+        if(err){
+            console.log('in error');
+            console.error(err);
+            res.status(401).end();
+        }
+        else{
+            if(result.code == 201){
+                console.log('in status code 201');
+                console.log(result);
+                res.status(201).send(result.data);
+            }
+            else{
+                console.log('in dunno');
+                res.status(401).end();
+            }
+        }
+    })
 })
 
 app.listen(8080, function(){

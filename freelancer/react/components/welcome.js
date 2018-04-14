@@ -3,6 +3,8 @@ import Profile from './Profile';
 import Home from './Home';
 import {BrowserRouter as Router, Route, IndexRoute, withRouter, Link} from 'react-router-dom';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+import Footer from './Footer';
+import Dashboard from './Dashboard';
 
 
 class Welcome extends React.Component {
@@ -62,7 +64,7 @@ class Welcome extends React.Component {
                 <Tabs className='react-tabs__tab'>
                     <TabList className='react-tabs__tab-list'>
                         <Tab>Profile</Tab>
-                        <Tab>Home</Tab>
+                        <Tab>Dashboard</Tab>
                     </TabList>
 
                     <TabPanel>
@@ -70,10 +72,11 @@ class Welcome extends React.Component {
                     </TabPanel>
 
                     <TabPanel>
-                        <h1>Home</h1>
+                        <Dashboard username={this.props.username}/>
                     </TabPanel>
                 </Tabs>
                 </div>
+                <Footer/>
             </div>
         )
     }

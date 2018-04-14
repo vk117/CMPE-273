@@ -72,6 +72,26 @@ function handle_request(msg, callback){
             callback(null, res);
         });
     }
+
+    if(msg.request_type == 'getuserprojects'){
+        Project.find({user: msg.data.user}, function(err, result){
+            if(err){
+                return console.error(err);
+                res.code = '401';
+                res.value = 'Error encountered';
+            }
+            else if(result.length){
+                console.log('user projects found');
+                res.code = '201';
+                res.data = result;
+            }
+            else{
+                res.code = '401';
+                res.value = 'no project found';
+            }
+            callback(null, res);
+        });
+    }
 }
 
 exports.handle_request = handle_request;

@@ -2,6 +2,7 @@ var connection = new require('./kafka/Connection');
 var login = require('./services/login');
 var add_user = require('./services/add_user');
 var user_details = require('./services/user_details');
+var bids = require('./services/bids');
 var project = require('./services/projects');
 
 var topic_name = 'test1';
@@ -77,11 +78,33 @@ consumer.on('message', function(message){
         })
     }
 
-    if(data.request_type == 'put_project' || 'get_projects'){
-        project.handle_request(data, function(req, res){
+    if(data.request_type == 'put_project' || 'get_projects' || 'getuserprojects'){
+        project.handle_request(data, function(err, res){
             var str = JSON.stringify(res);
             console.log('after handle' + str);
             var payloads =[
+                {
+                    topic: data.replyTo,
+                    messages: JSON.stringify({
+                        correlationId: data.correlationId,
+                        data: res
+                    }),
+                    partition: 0
+                }
+            ];
+            producer.send(payloads, function(err, data){
+                console.log(data);
+            });
+            return;
+        });
+    }
+
+    if(data.request_type == 'postBid' || 'userBids'){
+        bids.handle_request(data, function(err, res){
+            var str = JSON.stringify(res);
+            console.log('after handle' + str);
+            console.log(res);
+            var payloads = [
                 {
                     topic: data.replyTo,
                     messages: JSON.stringify({
