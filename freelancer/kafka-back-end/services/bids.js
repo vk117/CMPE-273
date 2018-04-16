@@ -10,12 +10,15 @@ function handle_request(msg, callback){
         Bid.find({project_id: msg.data.project_id, bid_by: msg.data.bid_by}, function(err, bid){
             if(err){
                 return console.error(err);
-                res.code == '401';
-                res.value == 'Error encountered';
+                res.code = '401';
+                res.value = 'Error encountered';
+                callback(null, res);
             }
             else if(bid.length){
-                res.code == '400';
-                res.value == 'Bid already exists'
+                console.log('Bid already exists');
+                res.code = '400';
+                res.value = 'Bid already exists'
+                callback(null, res);
             }
             else{
                 Bid.count(function(err, count){
@@ -32,16 +35,17 @@ function handle_request(msg, callback){
                     new_bid.save(function(err, bid){
                     if(err) {
                         return console.error(err);
-                        res.code == '401';
-                        res.value == 'error encountered';
+                        res.code = '401';
+                        res.value = 'error encountered';
+                        callback(null, res);
                     }
                     else {
                         res.code = '201';
                         res.value = 'Success';
+                        callback(null, res);
                     }
-                    callback(null, res);
+                    });
                 });
-            });
             }
         });
     }
@@ -50,18 +54,39 @@ function handle_request(msg, callback){
         Bid.find({bid_by: msg.data.bid_by}, function(err, bids){
             if(err){
                 return console.error(err);
-                res.code == '401';
-                res.value == 'Error encountered';
+                res.code = '401';
+                res.value = 'Error encountered';
             }
             else if(bids.length){
-                console.log('Projects found');
+                console.log('bids found');
                 res.code = '201';
                 console.log(bids);
                 res.data = bids;
             }
             else{
-                res.code == '401';
-                res.value == 'Bids not found';
+                res.code ='401';
+                res.value = 'Bids not found';
+            }
+            callback(null, res);
+        });
+    }
+
+    if(msg.request_type == 'projectBids'){
+        console.log(msg.data.project_id);
+        Bid.find({project_id: msg.data.project_id}, function(err, bids){
+            if(err){
+                return console.error(err);
+                res.code = '401';
+                res.value = 'Error encountered';
+            }
+            else if(bids.length){
+                console.log('bids found');
+                res.code = '201';
+                res.data = bids;
+            }
+            else{
+                res.code = '401';
+                res.value = 'Bids not found';
             }
             callback(null, res);
         });

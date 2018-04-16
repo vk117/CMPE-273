@@ -60,7 +60,7 @@ class Welcome extends React.Component {
                         </li>
                     </ul>
                 </nav>
-                <div>
+                <div className='react-tabs__tab'>
                 <Tabs className='react-tabs__tab'>
                     <TabList className='react-tabs__tab-list'>
                         <Tab>Profile</Tab>

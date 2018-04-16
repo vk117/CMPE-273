@@ -92,6 +92,23 @@ function handle_request(msg, callback){
             callback(null, res);
         });
     }
+
+    if(msg.request_type == 'hire'){
+        Project.update({_id: msg.data._id}, {$set:{status: msg.data.status, assigned_to: msg.data.assigned_to}}, function(err, result){
+            if(err){
+                return console.error(err);
+                res.code = '401';
+                res.value = 'Error encountered';
+            }
+            else if(result){
+                res.code = '201';
+            }
+            else{
+                res.code = '401';
+            }
+            callback(null, res);
+        })
+    }
 }
 
 exports.handle_request = handle_request;

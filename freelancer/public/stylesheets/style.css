@@ -6,3 +6,16 @@ body {
 a {
   color: #00B7FF;
 }
+
+.clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+
+.single-project-description table { width:100%; background:#fdfdfd; }
+.single-project-description table th { padding:10px 20px; color:#111; }
+.single-project-description table th:first-child { padding-left:30px; }
+.single-project-description table tbodysingle tr { border-bottom:4px solid #f6f6f6; }
+.single-project-description table tbody tr:last-child { border-bottom:0; }
+.single-project-description table tbody tr td { padding:15px 20px; }

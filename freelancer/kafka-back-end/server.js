@@ -78,7 +78,7 @@ consumer.on('message', function(message){
         })
     }
 
-    if(data.request_type == 'put_project' || 'get_projects' || 'getuserprojects'){
+    if(data.request_type == 'put_project' || 'get_projects' || 'getuserprojects' || 'hire'){
         project.handle_request(data, function(err, res){
             var str = JSON.stringify(res);
             console.log('after handle' + str);
@@ -99,7 +99,7 @@ consumer.on('message', function(message){
         });
     }
 
-    if(data.request_type == 'postBid' || 'userBids'){
+    if(data.request_type == 'postBid' || 'userBids'|| 'projectBids'){
         bids.handle_request(data, function(err, res){
             var str = JSON.stringify(res);
             console.log('after handle' + str);

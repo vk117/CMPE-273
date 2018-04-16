@@ -290,6 +290,45 @@ app.post('/getuserbids', function(req, res){
     })
 })
 
+app.post('/getprojectbids', function(req, res){
+    var id = req.body.project_id;
+    //console.log(req.body.project_id);
+    kafka.make_request('test1', {"project_id": id}, 'projectBids', function(err, result){
+        console.log('in get project bids');
+        console.log(result);
+        if(err){
+            console.error(err);
+            res.status(401).end();
+        }
+        else{
+            if(result.code == 201){
+                res.status(201).send(result.data);
+            }
+            else{
+                res.status(401).end();
+            }
+        }
+    })
+})
+
+app.post('/hire', function(req, res){
+    kafka.make_request('test1', {"_id": req.body.id, "assigned_to": req.body.assigned_to, "status": req.body.status}, 'hire', function(err, result){
+        console.log('in hire');
+        if(err){
+            console.error(err);
+            res.status(401).end();
+        }
+        else{
+            if(result.code == 201){
+                res.status(201).send(result);
+            }
+            else{
+                res.status(401).end();
+            }
+        }
+    })
+})
+
 app.listen(8080, function(){
     console.log('the server listening');
 })

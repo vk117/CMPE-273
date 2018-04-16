@@ -46,3 +46,9 @@
 .footer {
     height: 75px;
 }
+
+.underline{
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}

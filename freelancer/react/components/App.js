@@ -13,6 +13,7 @@ import Welcome from './Welcome';
 import * as API from '../api/API';
 import HomePage from './HomePage';
 import Details from './Details';
+import BidDetails from './bid_details';
 
  class App extends React.Component{
     constructor(){
@@ -135,6 +136,7 @@ import Details from './Details';
                     </div>
                  )}/>
                 <Route path="/details_2" component={ShowProject}/>
+                <Route path='/bid' component={BidDetails}/>
             </div>
         )
     }

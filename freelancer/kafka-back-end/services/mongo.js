@@ -23,7 +23,9 @@ var new_project = new Schema({
     description: {type: String, required: true},
     skills: {type: String, required: true},
     budget: {type: String, required: true},
-    user: {type: String, required: true}
+    user: {type: String, required: true},
+    status: {type: Boolean, required: false},
+    assigned_to: {type: String, required: false}
 })
 
 var new_bid = new Schema({

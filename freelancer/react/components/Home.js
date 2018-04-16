@@ -37,17 +37,18 @@ class Home extends React.Component{
             <div className='container-fluid'>
                 <div className='card bg-light text-dark profile'>
                     <div className='card-body'>
-                        <h1>Home</h1>
-                        <div>
-                            <ul>
+                        <h1 style={{textAlign: 'center'}}>Home</h1><br/>
+                        <h2 style={{textAlign: 'center'}}>Open Projects</h2><br/><br/>
+                        <div className="single-project-description">
+                            <table className="table">
+                                <tbody>
                                 {this.state.projects.map(function(item, i){
                                     return (
-                                        <div>
                                             <ShowElement key={i} element={item}/>
-                                        </div>
                                     )
                                 })}
-                            </ul>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

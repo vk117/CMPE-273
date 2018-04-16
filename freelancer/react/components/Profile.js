@@ -41,23 +41,30 @@ class Profile extends React.Component {
             <div className="container-fluid">
                 <div className="card bg-light text-dark profile">
                     <div className="card-body">
-                        <h1> User Profile</h1>
-                        {this.props.username} 
-                        <div>
-                            Name: {this.state.name}
-                        </div>
-                        <div>
-                            Phone: {this.state.phone}
-                        </div>
-                        <div>
-                            About: {this.state.about}
-                        </div>
-                        <div>
-                            Skills: {this.state.skills}
-                        </div>
+                        <h1 style={{textAlign: 'center'}}> User Profile</h1><br/><br/><br/><br/>
+                        <table className="table">
+                            <tbody style={{textAlign: 'center'}}>
+                                <tr style={{backgroundColor: 'white'}}>
+                                    <td>Name:</td>
+                                    <td>{this.state.name}</td>
+                                </tr>
+                                <tr style={{backgroundColor: 'white'}}>
+                                    <td>Phone:</td>
+                                    <td>{this.state.phone}</td>
+                                </tr>
+                                <tr style={{backgroundColor: 'white'}}>
+                                    <td>About:</td>
+                                    <td>{this.state.about}</td>
+                                </tr>
+                                <tr style={{backgroundColor: 'white'}}>
+                                    <td>Skills:</td>
+                                    <td>{this.state.skills}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
+        </div>
         )
     }
 }

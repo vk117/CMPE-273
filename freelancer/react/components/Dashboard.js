@@ -1,5 +1,6 @@
 import React from 'react';
 import ShowElement from './ShowElement';
+import ShowBid from './ShowBid';
 
 class Dashboard extends React.Component{
     constructor(){
@@ -25,16 +26,6 @@ class Dashboard extends React.Component{
               this.setState({projects: pro});
               this.getBids();
           })
-
-        /*return fetch('http://localhost:8080/getuserbids', {
-            method: 'POST',
-            headers: {
-                'Accept'       : 'application/json',
-                'Content-Type' : 'application/json'
-            },
-            body: JSON.stringify({username: this.props.username}),
-            credentials: 'include'
-        }).then(res => console.log(res.json()))*/
     }
 
     getBids(){
@@ -57,33 +48,38 @@ class Dashboard extends React.Component{
             <div className='container-fluid'>
                 <div className='card bg-light text-dark profile'>
                     <div className='card-body'>
-                       <div><h1>Dashboard</h1></div>
-                       <div><h2>Posted by you</h2></div>
-                       <div>
-                           <ul>
-                           {this.state.projects.map(function(item, i){
+                       <h2 style={{textAlign: 'center'}}>Posted by you</h2><br/>
+                        <div className="single-project-description">
+                            <table className='table'>
+                                <tbody>
+                                {this.state.projects.map(function(item, i){
                                     return (
-                                        <div>
                                             <ShowElement key={i} element={item}/>
-                                        </div>
                                     )
                                 })}
-                           </ul>
-                       </div>
-                       <div><h2>Your bids</h2></div>
-                       <div>
-                           <ul>
-                               {this.state.bids.map(function(item, i){
+                                </tbody>
+                            </table>
+                        </div>
+                            <br/><br/>
+                       <div><h2 style={{textAlign: 'center'}}>Your bids</h2></div><br/>
+                       <div className="single-project-description">
+                            <table className='table'>
+                                <thead>
+                                    <tr style={{backgroundColor: 'white'}}>
+                                        <th>Project</th>
+                                        <th>Employer</th>
+                                        <th>Bid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {this.state.bids.map(function(item, i){
                                    return(
-                                       <div>
-                                           <a href="#" key={i}>
-                                              {item.project_title}
-                                           </a>
-                                       </div>
+                                    <ShowBid key={i} element={item}/>
                                    )
                                })}
-                           </ul>
-                       </div>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div> 

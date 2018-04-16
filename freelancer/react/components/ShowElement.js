@@ -21,11 +21,13 @@ class ShowElement extends React.Component{
 
     render(){
         return(
-            <div>
-                <a href="#" onClick={this.sendId.bind(this)}> 
-                    {this.props.element.title}
-                </a>
-            </div>
+            <tr>
+                <td>
+                    <a href="#" onClick={this.sendId.bind(this)}> 
+                        {this.props.element.title}
+                    </a>
+                </td>
+            </tr>
         )
     }
 } 

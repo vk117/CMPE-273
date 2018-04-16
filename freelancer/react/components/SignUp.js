@@ -45,7 +45,7 @@ export class SignUp extends React.Component {
             <div className="container-fluid">
             <div className="row justify-content-md-center vertical-center">
             <div className="col-md-3">
-                <h1 className="center">Sign Up</h1><br/>
+                <h1 style={{textAlign: 'center'}}>Sign Up</h1><br/>
                 <div className="form-group">
                     <input 
                         type="text" 
